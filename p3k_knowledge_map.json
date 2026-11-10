@@ -1,0 +1,359 @@
+{
+  "id": "p3k",
+  "name": "Panduan Pertolongan Pertama (P3K)",
+  "bot_name": "SiagaBot",
+  "avatar": "🩹",
+  "color": "#e53935",
+  "description": "Asisten panduan pertolongan pertama untuk cedera ringan sehari-hari di rumah dan lingkungan sekitar.",
+  "greeting": "Halo! Saya SiagaBot 🩹, asisten panduan pertolongan pertama. Ceritakan cedera atau kejadian yang dialami (misalnya kena air panas, jatuh lecet, keseleo, atau tertusuk paku). Catatan: Saya bukan pengganti tenaga medis dan tidak memberikan dosis obat.",
+  "suggestions": [
+    "Kena air panas",
+    "Jatuh luka lecet",
+    "Kaki keseleo",
+    "Isi kotak P3K"
+  ],
+  "fallback": [
+    "Maaf, saya belum memahami pertanyaan tersebut. Coba tuliskan kejadiannya secara singkat, misalnya 'tertusuk paku', 'jari teriris pisau', atau 'anak mimisan'. Jika kondisi darurat berat, segera hubungi 119.",
+    "Pertanyaan itu belum ada di basis pengetahuan {nama_bot}. Silakan tanyakan seputar cedera sehari-hari seperti luka lecet, luka bakar ringan, keseleo, memar, tersedak, atau isi kotak P3K.",
+    "Maaf, {nama_bot} hanya fokus pada pertolongan pertama cedera fisik sehari-hari. Coba gunakan kata kunci kejadian seperti 'kena knalpot', 'mata kelilipan', atau 'jari terjepit pintu'. Untuk darurat medis, hubungi 119/112."
+  ],
+  "intents": [
+    {
+      "tag": "salam",
+      "category": "Umum",
+      "patterns": [
+        "halo",
+        "hai",
+        "hi",
+        "salam",
+        "permisi",
+        "selamat pagi",
+        "selamat siang",
+        "selamat malam",
+        "pagi",
+        "siang",
+        "malam",
+        "assalamualaikum"
+      ],
+      "responses": [
+        "Halo! Saya {nama_bot} 🩹. Ceritakan kejadian atau cedera yang dialami, misalnya kena air panas, jatuh lecet, atau kaki keseleo.",
+        "Hai! {nama_bot} siap membantu panduan pertolongan pertama. Silakan ketik keluhan secara singkat, seperti mimisan, teriris pisau, atau mata kelilipan.",
+        "Selamat datang! Ada cedera ringan yang perlu ditangani segera? Ketik kejadiannya (contoh: tertusuk paku, benjol terbentur, atau jari terjepit) agar {nama_bot} bisa memberikan langkah pertolongannya."
+      ]
+    },
+    {
+      "tag": "identitas",
+      "category": "Umum",
+      "patterns": [
+        "kamu siapa",
+        "kamu bot apa",
+        "siagabot itu apa",
+        "fungsi bot ini apa",
+        "apa kegunaanmu",
+        "tentang chatbot ini",
+        "ini aplikasi apa"
+      ],
+      "responses": [
+        "Saya {nama_bot} 🩹, asisten chatbot berbasis aturan yang memberikan panduan pertolongan pertama untuk cedera sehari-hari. Catatan: Saya hanya panduan awal, bukan pengganti tenaga medis, dan tidak meresepkan dosis obat.",
+        "Kenalkan, saya {nama_bot}! Tugas saya membantu Anda melakukan langkah pertolongan pertama yang cepat dan tepat saat mengalami luka atau cedera ringan di rumah sebelum ke fasilitas kesehatan.",
+        "Saya adalah {nama_bot}, pemandu P3K virtual Anda. Saya dirancang untuk menjawab cara menangani luka lecet, sayatan, luka bakar, keseleo, hingga kemasukan benda asing secara ringkas dan berjenjang."
+      ]
+    },
+    {
+      "tag": "terima_kasih",
+      "category": "Umum",
+      "patterns": [
+        "makasih",
+        "thanks",
+        "terima kasih",
+        "makasih banyak",
+        "thank you",
+        "sangat membantu",
+        "oke makasih"
+      ],
+      "responses": [
+        "Sama-sama! Semoga lekas pulih dan tetap berhati-hati dalam beraktivitas ya 🙏.",
+        "Senang bisa membantu! Jangan ragu untuk memeriksakan diri ke klinik atau puskesmas terdekat jika keluhan tidak kunjung membaik.",
+        "Terima kasih kembali! Pastikan kotak P3K di rumah selalu terisi lengkap untuk berjaga-jaga. Semoga sehat selalu 🙏."
+      ]
+    },
+    {
+      "tag": "isi_kotak_p3k",
+      "category": "Umum",
+      "patterns": [
+        "isi kotak p3k",
+        "obat apa di p3k",
+        "perlengkapan p3k di rumah",
+        "alat p3k apa saja",
+        "daftar isi p3k",
+        "apa saja isi kotak p3k"
+      ],
+      "responses": [
+        "Isi standar kotak P3K rumah tangga: kasa steril, plester luka berbagai ukuran, perban elastis, cairan antiseptik (povidone iodine/alkohol swab), larutan saline (NaCl 0,9%), gunting medis, pinset, sarung tangan lateks, termometer, dan kantong kompres dingin. Cek tanggal kedaluwarsa tiap 6 bulan.",
+        "Pastikan kotak P3K Anda memuat tiga kelompok utama: 1) Pembersih luka (cairan antiseptik, kasa alkohol, air saline), 2) Penutup & penyangga (kasa steril, plester gulung/cepat, perban elastis, kain segitiga/mitela), dan 3) Alat bantu (gunting, pinset, sarung tangan, kompres instan). Simpan di tempat sejuk dan kering.",
+        "Daftar wajib kotak P3K: kasa steril, plester luka, perban gulung & elastis, cairan antiseptik tanpa perih, pinset untuk mencabut serpihan, gunting perban, sarung tangan sekali pakai, dan kompres dingin. Periksa kelengkapan dan masa kedaluwarsanya secara berkala setiap 6 bulan."
+      ]
+    },
+    {
+      "tag": "darurat_umum",
+      "category": "Umum",
+      "patterns": [
+        "tidak sadar",
+        "tidak bernapas",
+        "darah banyak",
+        "kejang",
+        "nyeri dada",
+        "tenggelam",
+        "pingsan",
+        "pendarahan hebat",
+        "kaki patah",
+        "sesak nafas"
+      ],
+      "responses": [
+        "PERINGATAN DARURAT: Ini adalah kondisi medis berat yang mengancam nyawa. Segera hubungi ambulans di 119 / 112 atau bawa korban langsung ke IGD rumah sakit terdekat. Jangan menunda penanganan di rumah.",
+        "Kondisi ini termasuk kegawatdaruratan medis dan berada di luar jangkauan pertolongan pertama mandiri. Segera telepon 119 / 112, minta bantuan orang di sekitar, dan larikan ke IGD terdekat sekarang juga.",
+        "BAHAYA: Gejala seperti tidak sadar, henti napas, kejang, nyeri dada, atau perdarahan masif membutuhkan tindakan medis darurat segera. Hubungi 119 / 112 atau langsung menuju IGD terdekat tanpa menunggu."
+      ]
+    },
+    {
+      "tag": "luka_lecet",
+      "category": "Luka & Cedera",
+      "patterns": [
+        "jatuh dari motor lecet",
+        "lutut lecet",
+        "tergores aspal",
+        "kulit lecet berdarah",
+        "siku lecet jatuh",
+        "cara obati luka lecet",
+        "luka baret"
+      ],
+      "responses": [
+        "1) Lecet Ringan/Bersih: Cuci tangan dengan sabun, bilas luka di bawah air mengalir untuk membuang debu, tepuk kering dengan kasa steril, oleskan cairan antiseptik, dan tutup plester. 2) Lecet Luas/Kotor (Tergores Aspal/Tanah): Guyur dengan air mengalir atau larutan saline (NaCl 0,9%) sambil dibersihkan perlahan memakai kasa hingga seluruh kerikil/pasir luruh sempurna (jangan digosok kasar), beri antiseptik, dan tutup dengan kasa steril anti-lengket (ganti tiap 24 jam atau saat basah). 3) Waspada: Segera ke klinik jika kotoran aspal tertanam dalam, atau muncul tanda infeksi setelah 2 hari (bengkak meluas, kemerahan, terasa panas, berdenyut, dan bernanah).",
+        "1) Tingkat Ringan (Tergores Permukaan Bersih): Bersihkan area lecet dengan air mengalir dan sabun lembut di sekitar luka, oleskan antiseptik (hindari alkohol 70% langsung pada luka terbuka karena merusak jaringan), lalu pasang plester. 2) Tingkat Sedang (Jatuh di Jalan/Kotor): Pastikan tidak ada sisa pasir atau kerikil yang tertinggal di jaringan kulit dengan membilasnya memakai air mengalir selama beberapa menit, oles antiseptik, dan balut kasa steril. 3) Tingkat Berat/Waspada: Jika area lecet sangat lebar (melebihi telapak tangan), perdarahan rembes tidak berhenti setelah ditekan 10 menit, atau muncul demam dan nanah, segera periksakan ke dokter.",
+        "1) Penanganan Lecet Kecil: Bilas luka di bawah kucuran air bersih, keringkan tepinya, beri cairan antiseptik, dan biarkan terbuka jika sangat kecil atau tutup plester agar tidak tergesek pakaian. 2) Penanganan Lecet Kotor (Kontaminasi Tanah/Aspal): Cuci ekstra bersih dengan air mengalir dan sabun lembut untuk mencegah infeksi bakteri maupun tetanus, aplikasikan antiseptik, lalu tutup dengan kasa steril yang diganti rutin setiap hari. 3) Tanda Bahaya: Kunjungi puskesmas/klinik apabila luka tampak membengkak merah, mengeluarkan cairan kuning kental berbau (nanah), atau Anda belum pernah suntik tetanus dalam 10 tahun terakhir."
+      ]
+    },
+    {
+      "tag": "luka_sayat",
+      "category": "Luka & Cedera",
+      "patterns": [
+        "kena pisau",
+        "jari teriris",
+        "kena pecahan kaca",
+        "tangan tergores pisau",
+        "luka sayat berdarah",
+        "teriris silet",
+        "kena cutter"
+      ],
+      "responses": [
+        "1) Sayatan Dangkal & Benda Bersih (Pisau Dapur/Kertas): Tekan langsung luka dengan kasa atau kain bersih selama 5-10 menit sambil meninggikan posisi tangan hingga darah berhenti, bilas air mengalir, oles antiseptik, dan rekatkan plester untuk merapatkan tepi luka. 2) Sayatan Benda Kotor/Berkarat (Cutter Karatan/Pecahan Kaca Tanah): Setelah perdarahan berhenti, cuci luka di bawah air mengalir dan sabun selama 5 menit penuh, beri antiseptik, tutup kasa steril, dan segera ke klinik dalam 24 jam untuk evaluasi suntik antitetanus. 3) Waspada/Sayatan Dalam: Jika darah memancar deras, tidak berhenti setelah ditekan 10 menit, luka menganga lebar (>0,5 cm), atau jari terasa kebas, tahan dengan kain tebal dan langsung ke IGD untuk dijahit.",
+        "1) Level Ringan (Irisan Kecil & Bersih): Hentikan darah terlebih dahulu dengan menekan kasa steril tepat di atas luka (jangan sering dibuka-tutup), lalu bilas dengan air bersih mengalir, beri antiseptik, dan pasang plester. 2) Level Sedang (Benda Tajam Kotor/Berkarat): Risiko infeksi dan tetanus tinggi; bilas luka lebih lama menggunakan air mengalir dan sabun, pastikan tidak ada serpihan kaca yang tertinggal, balut kasa bersih, dan kunjungi dokter untuk profilaksis tetanus. 3) Level Berat (Darah Mengucur/Luka Menganga): Apabila terlihat jaringan lemak/otot di dasar luka atau darah terus merembes tembus perban, tetap tekan luka dengan kain bersih dan segera menuju IGD.",
+        "1) Kondisi Bersih & Permukaan: Cuci tangan, tekan luka selama 5-10 menit memakai kain bersih sampai perdarahan reda, bersihkan dengan air mengalir, oleskan povidone iodine di sekitar luka, lalu tutup plester. 2) Kondisi Kotor/Berkarat (Seng/Kaca/Cutter Lama): Cuci bersih area sayatan dengan air mengalir dan sabun lembut setelah darah berhenti, tutup kasa steril, serta wajib konsultasi ke fasilitas kesehatan untuk suntik antitetanus. 3) Kondisi Darurat: Jika sayatan berada di area wajah, leher, pergelangan tangan dalam, atau tepi luka tidak bisa menyatu, segera bawa ke IGD dalam waktu kurang dari 6 jam agar bisa dijahit dengan optimal."
+      ]
+    },
+    {
+      "tag": "luka_bakar_ringan",
+      "category": "Luka & Cedera",
+      "patterns": [
+        "kena air panas",
+        "tersiram minyak panas",
+        "kaki kena knalpot",
+        "tangan kena setrika",
+        "kulit melepuh panas",
+        "kena panci panas",
+        "luka bakar"
+      ],
+      "responses": [
+        "1) Derajat 1 (Kulit Kemerahan & Perih Tanpa Lepuh): Segera alirkan air keran biasa yang mengalir (bukan air es/es batu) selama 15-20 menit untuk menghentikan panas di jaringan kulit, lepas cincin/jam tangan sebelum membengkak, dan dilarang keras mengoleskan odol, kecap, mentega, atau minyak. 2) Derajat 2 Ringan (Muncul Gelembung Air/Melepuh Kecil): Dinginkan dengan air mengalir 20 menit, jangan pecahkan atau tusuk gelembung lepuh karena kulit tersebut melindungi dari infeksi, lalu tutup secara longgar menggunakan kasa steril bersih. 3) Waspada/Berat: Segera ke IGD jika luka bakar lebih lebar dari telapak tangan korban, mengenai wajah, leher, kelamin, atau sendi utama, serta jika kulit tampak putih pucat atau hangus menghitam.",
+        "1) Luka Bakar Dangkal (Kemerahan Saja): Guyur area yang terkena panas di bawah air mengalir sejuk selama 15-20 menit hingga rasa panas mereda, keringkan perlahan dengan kain bersih, dan hindari mengoleskan bahan dapur apa pun yang dapat memicu infeksi. 2) Luka Bakar Berlepuh (Kena Knalpot/Minyak Panas): Setelah didinginkan dengan air mengalir 20 menit dan perhiasan dilepas, biarkan gelembung lepuhan tetap utuh (jika pecah sendiri, bilas air bersih, beri antiseptik lembut, dan tutup kasa steril yang tidak lengket). 3) Kondisi Serius: Bawa langsung ke fasilitas kesehatan apabila lepuhan sangat luas, korban adalah anak kecil/lansia, atau muncul tanda infeksi seperti nanah dan demam.",
+        "1) Tingkat Ringan (Tanpa Gelembung Lepuh): Dinginkan secepatnya dengan kucuran air mengalir selama 15-20 menit (jangan gunakan es batu karena memperparah kerusakan jaringan kulit), lepaskan pakaian/aksesoris di sekitar area luka, dan biarkan kulit bernapas tanpa dioles odol atau mentega. 2) Tingkat Sedang (Melepuh/Berair): Dinginkan dengan air mengalir 20 menit, jaga agar dinding lepuhan tidak terkelupas, lalu balut longgar memakai kasa steril kering agar terlindung dari gesekan. 3) Tingkat Berat/Waspada: Jika pakaian melekat pada luka bakar, jangan ditarik paksa; segera larikan ke IGD terutama bila luka mengenai area mata, wajah, telapak tangan penuh, atau tampak mati rasa."
+      ]
+    },
+    {
+      "tag": "tertusuk_benda",
+      "category": "Luka & Cedera",
+      "patterns": [
+        "kaki tertusuk paku",
+        "tertusuk duri",
+        "tertusuk jarum",
+        "kena kawat berkarat",
+        "telapak kaki kena paku",
+        "tertusuk serpihan kayu",
+        "keinjak paku"
+      ],
+      "responses": [
+        "1) Tusukan Dangkal & Benda Bersih (Jarum Jahit/Duri Halus di Permukaan): Cuci tangan, cabut duri/jarum perlahan searah masuknya menggunakan pinset yang sudah disterilkan alkohol, cuci luka dengan air mengalir dan sabun, oles antiseptik, lalu tutup plester. 2) Tusukan Dalam, Kotor, atau Berkarat (Paku Karatan/Kawat/Kayu Tanah): Biarkan darah keluar sedikit untuk mendorong bakteri keluar, cuci di bawah air mengalir dan sabun selama 5 menit, beri antiseptik, tutup kasa steril, dan WAJIB ke klinik/puskesmas dalam 24 jam untuk pembersihan luka dalam serta suntik antitetanus. 3) Waspada (Benda Masih Menancap Dalam): Jangan dicabut paksa sendiri karena bisa memicu perdarahan hebat; tahan benda dengan bantalan kasa di sekelilingnya dan langsung ke IGD.",
+        "1) Level Ringan (Serpihan Kecil di Kulit Luar): Jika ujung benda terlihat jelas dan dangkal, ambil dengan pinset bersih, bilas memakai air mengalir dan sabun lembut, oleskan cairan antiseptik, dan pasang plester. 2) Level Sedang-Berat (Paku/Benda di Tanah/Berkarat): Luka tusuk memiliki lubang sempit namun dalam sehingga rawan mengurung bakteri tetanus; setelah dicuci air mengalir, disabun, dan ditutup kasa bersih, segera periksakan ke dokter untuk evaluasi vaksin tetanus dan antibiotik. 3) Tanda Bahaya: Jangan mencabut benda yang menancap dalam atau patah di dalam daging—segera bawa ke IGD, terlebih jika kaki/tangan terasa kebas, bengkak merah meluas, atau darah memancar.",
+        "1) Benda Kecil & Bersih: Keluarkan benda dengan pinset steril jika berada tepat di permukaan kulit, tekan sedikit agar darah membawa kotoran keluar, bilas air mengalir dan sabun, lalu beri antiseptik dan plester. 2) Benda Kotor/Berkarat (Paku/Kawat/Pecahan Kaca Tanah): Cuci bersih luka dengan kucuran air mengalir dan sabun, oles antiseptik, balut kasa steril, dan segera kunjungi fasilitas kesehatan terdekat untuk mendapatkan suntikan antitetanus (terutama bila riwayat vaksin >5 tahun). 3) Kondisi Darurat: Apabila benda tertancap menembus anggota tubuh, patah di dalam kulit, atau perdarahan tidak berhenti setelah ditekan 10 menit, segera ke IGD tanpa mencabut benda tersebut."
+      ]
+    },
+    {
+      "tag": "memar_benjol",
+      "category": "Luka & Cedera",
+      "patterns": [
+        "kepala terbentur",
+        "dahi benjol",
+        "kulit memar biru",
+        "kepala kejedot tembok",
+        "kaki terbentur meja",
+        "cara mengatasi memar",
+        "badan lebam"
+      ],
+      "responses": [
+        "1) Benturan Ringan (Memar di Tangan/Kaki atau Benjol Kecil di Dahi): Segera tempelkan kompres dingin (es batu dibungkus kain/handuk tipis, jangan tempel es langsung ke kulit) selama 15-20 menit sebanyak 3-4 kali sehari pada 24-48 jam pertama untuk menyempitkan pembuluh darah dan menahan bengkak, serta istirahatkan bagian yang nyeri. 2) Benturan Sedang (Memar Luas/Bengkak): Tinggikan posisi anggota tubuh yang memar di atas bantal dan hindari memijat atau mengoleskan balsem panas di 2 hari pertama karena akan memperparah perdarahan bawah kulit. 3) Waspada Benturan Kepala Berat: Pantau selama 24-48 jam; segera larikan ke IGD jika muncul muntah menyembur, sakit kepala makin hebat, pandangan kabur, bicara pelo, linglung, mengantuk terus-menerus, atau keluar darah/cairan bening dari hidung dan telinga.",
+        "1) Level Ringan (Lebam/Benjol Biasa Tanpa Gejala Lain): Istirahatkan area yang terbentur dan beri kompres dingin berbalut kain selama 15-20 menit untuk mengurangi ukuran benjolan serta rasa nyeri (setelah lewat 48 jam dan bengkak berhenti, boleh diganti kompres hangat agar bercak biru cepat memudar). 2) Level Sedang (Benturan di Sekitar Mata/Sendi): Kompres dingin secara lembut tanpa menekan bola mata atau sendi terlalu keras, dan pastikan sendi masih bisa digerakkan normal. 3) Level Berat (Tanda Gegar Otak/Perdarahan Dalam): Jika benturan terjadi di kepala atau dada/perut diikuti rasa mual muntah, pusing berputar, kehilangan keseimbangan, kejang, atau pingsan walau sebentar, segera bawa ke IGD.",
+        "1) Penanganan Awal Memar & Benjol: Bungkus es batu dengan handuk tipis lalu kompreskan pada area yang terbentur selama 15-20 menit (ulangi tiap 3-4 jam di hari pertama), posisikan bagian tubuh lebih tinggi, dan jangan diurut. 2) Pemantauan Lanjutan (Hari ke-3 ke Atas): Setelah bengkak kempis di hari ketiga, kompres hangat 15 menit dapat membantu melancarkan aliran darah untuk menyerap sisa lebam kebiruan. 3) Tanda Bahaya (Khusus Kepala & Anak): Segera ke rumah sakit apabila benjolan terasa lembek membesar di kepala bayi, anak menangis tak henti/sulit dibangunkan, atau korban dewasa mengeluhkan muntah-muntah, penglihatan ganda, dan kebingungan."
+      ]
+    },
+    {
+      "tag": "keseleo",
+      "category": "Luka & Cedera",
+      "patterns": [
+        "kaki terkilir",
+        "pergelangan keseleo",
+        "kaki bengkak salah tumpuan",
+        "engkel terkilir",
+        "tangan keseleo",
+        "cara mengatasi terkilir",
+        "salah urat"
+      ],
+      "responses": [
+        "1) Keseleo Ringan (Nyeri & Sedikit Bengkak, Masih Bisa Menumpu Beban): Terapkan metode RICE selama 48 jam pertama—Rest (istirahatkan sendi, kurangi jalan), Ice (kompres es berbalut kain 15-20 menit tiap 3-4 jam), Compression (balut perban elastis dengan tekanan sedang, jangan terlalu kencang hingga jari kesemutan), dan Elevation (ganjal kaki/tangan lebih tinggi dari jantung saat duduk/berbaring). 2) Larangan Awal (HARM): Hindari Heat (kompres panas/balsem panas), Alcohol, Running (olahraga), dan Massage (urut/pijat) di 2-3 hari pertama karena memperparah bengkak ligamen. 3) Waspada Keseleo Berat/Patah Tulang: Jika terdengar bunyi 'krek' saat jatuh, bentuk sendi terlihat miring/bengkok, bengkak ekstrem seketika, jari pucat/mati rasa, atau tidak sanggup menapak sama sekali, tahan posisi sendi (jangan digerakkan) dan segera ke RS untuk rontgen.",
+        "1) Tingkat Ringan-Sedang (Terkilir Pergelangan Kaki/Tangan): Segera hentikan aktivitas, dudukkan korban, kompres dingin area sendi selama 15-20 menit untuk menekan pembengkakan, pasang perban elastis (longgarkan jika jari terasa kebas atau membiru), dan angkat kaki/tangan di atas bantal. 2) Perawatan di Rumah: Jangan dipijat atau diurut pada fase akut (3 hari pertama) agar robekan halus pada jaringan ikat (ligamen) tidak semakin parah. 3) Tingkat Berat (Curiga Dislokasi/Patah Tulang): Apabila nyeri sangat hebat saat disentuh pada bagian tulang keras, sendi tampak bergeser dari posisinya, atau bengkak tidak berkurang setelah 3-5 hari, segera periksakan ke dokter ortopedi/IGD.",
+        "1) Penanganan Standar Keseleo (Metode RICE): Istirahatkan bagian yang terkilir (Rest), tempelkan kompres es berbalut handuk selama 15-20 menit (Ice), bebat dengan perban elastis untuk menopang sendi (Compression), dan tinggikan posisi tungkai di atas bantal (Elevation). 2) Hal yang Harus Dihindari: Dilarang mengurut sendi yang baru bengkak atau mengoleskan krim pemanas di 48 jam pertama karena memicu pelebaran pembuluh darah dan memar makin luas. 3) Tanda Bahaya: Segera bawa ke fasilitas kesehatan jika korban sama sekali tidak bisa menggerakkan sendi, terdengar suara patahan saat kejadian, ujung jari terasa dingin/kesemutan, atau bentuk tulang tampak tidak simetris."
+      ]
+    },
+    {
+      "tag": "mimisan",
+      "category": "Luka & Cedera",
+      "patterns": [
+        "hidung berdarah",
+        "tiba tiba mimisan",
+        "cara mengatasi mimisan",
+        "darah keluar dari hidung",
+        "anak mimisan",
+        "pertolongan pertama mimisan",
+        "keluar darah dari hidung"
+      ],
+      "responses": [
+        "1) Mimisan Ringan/Biasa (Akibat Udara Kering, Panas, atau Mengorek Hidung): Duduk tegak dan condongkan badan serta kepala sedikit ke depan (JANGAN mendongak atau berbaring agar darah tidak mengalir ke tenggorokan dan memicu muntah/tersedak), bernapaslah lewat mulut, lalu jepit bagian cuping lunak hidung (tepat di bawah tulang hidung) secara mantap selama 10 menit penuh tanpa dilepas-lepas sambil mengompres dingin pangkal hidung. 2) Setelah Darah Berhenti: Jangan membuang ingus dengan keras, jangan mengorek hidung, dan hindari membungkuk/mengangkat beban berat selama 24 jam. 3) Waspada/Mimisan Berat: Segera bawa ke IGD jika darah tetap mengucur deras setelah 2 kali penekanan (total 20 menit), volume darah sangat banyak, korban tampak pucat/lemas/pusing, atau mimisan terjadi setelah benturan kepala.",
+        "1) Langkah Pertama (0-10 Menit Pertama): Tenangkan korban, posisikan duduk menunduk sedikit ke depan, ludahkan darah yang telanjur masuk ke mulut, dan pencet kedua sisi bagian lunak hidung menggunakan ibu jari serta telunjuk selama 10 menit terus-menerus sambil bernapas lewat mulut. 2) Langkah Kedua (Jika Masih Rembes di Menit ke-10): Tempelkan es batu berbalut kain di pangkal batang hidung untuk membantu menyempitkan pembuluh darah, lalu ulangi penjepitan cuping hidung selama 10 menit lagi. 3) Tanda Bahaya Medis: Langsung larikan ke klinik atau IGD apabila perdarahan tidak berhenti setelah 20 menit, darah mengalir deras ke kerongkongan, korban mengonsumsi obat pengencer darah, atau mimisan disertai sesak napas dan cedera wajah.",
+        "1) Penanganan Mandiri Mimisan: Duduklah dengan posisi kepala menunduk ke depan (dilarang menengadah dan jangan menyumpal lubang hidung dengan tisu/kapas karena saat dicabut dapat merobek kembali bekuan darah), lalu jepit bagian lunak hidung selama 10 menit nonstop sambil bernapas melalui mulut. 2) Perawatan Pasca-Mimisan: Setelah berhenti, bersihkan sekitar mulut dan hidung dengan air hangat secara lembut dan istirahatlah dalam posisi duduk/setengah duduk. 3) Kapan Harus ke IGD: Jika perdarahan berlanjut lebih dari 20 menit, terjadi pada bayi/balita di bawah 2 tahun, dipicu oleh pukulan/jatuh terbentur di kepala, atau tubuh terasa sangat lemas dan berkunang-kunang."
+      ]
+    },
+    {
+      "tag": "jari_terjepit",
+      "category": "Luka & Cedera",
+      "patterns": [
+        "jari terjepit pintu",
+        "kuku menghitam terjepit",
+        "jari tertimpa benda berat",
+        "tangan terjepit laci",
+        "jempol terjepit pintu",
+        "jari bengkak terjepit",
+        "kejepit pintu"
+      ],
+      "responses": [
+        "1) Terjepit Ringan (Memar/Kemerahan Tanpa Luka Terbuka): Segera lepaskan cincin atau perhiasan di jari sebelum jari membengkak, kompres dingin (es dibungkus kain) selama 15-20 menit, dan angkat posisi tangan lebih tinggi dari dada untuk meredakan denyut nyeri. 2) Terjepit Sedang (Kuku Menghitam/Memar di Bawah Kuku atau Lecet): Jika ada luka lecet, bilas dengan air mengalir dan beri antiseptik; jika darah menggumpal di bawah kuku (kuku biru/hitam), jangan melubangi kuku dengan jarum sendiri atau mencabut kuku yang longgar—cukup tutup longgar dengan kasa steril. 3) Waspada Patah Tulang/Luka Berat: Segera ke IGD/dokter jika jari tampak bengkok, tidak bisa diluruskan/ditekuk, ujung jari mati rasa/pucat dingin, kuku terlepas, atau nyeri berdenyut di bawah kuku tak tertahankan.",
+        "1) Level Ringan (Nyeri & Bengkak Ringan): Lepas cincin secepatnya, tempelkan kompres dingin berbalut handuk selama 15-20 menit beberapa kali sehari, dan istirahatkan jari dengan posisi tangan ditinggikan. 2) Level Sedang (Perdarahan Bawah Kuku/Kuku Terangkat Sebagian): Bersihkan jari dengan air mengalir atau larutan saline, rekatkan kuku yang terangkat dengan plester/kasa steril agar tidak tersangkut pakaian (jangan ditarik paksa), dan hindari memijat jari yang terjepit. 3) Level Berat (Curiga Fraktur/Kerusakan Saraf): Apabila jari tertimpa beban sangat berat hingga bentuk tulang berubah, bengkak membiru seluruh jari, darah terus mengucur dari sela kuku, atau jari kehilangan rasa sentuhan, tahan posisi jari dengan bidai sederhana (misal stik es krim bersih) dan segera ke RS.",
+        "1) Penanganan Awal Jari Terjepit: Amankan jari dengan melepas cincin/gelang, kompres menggunakan es berbalut kain selama 15 menit untuk menahan pembengkakan, dan posisikan tangan lebih tinggi dari jantung. 2) Penanganan Kuku Menghitam (Hematoma Subungual): Bila memar hitam menutupi sebagian kecil kuku tanpa nyeri hebat, biarkan kuku tumbuh alami; namun bila memar hitam menutupi >50% area kuku disertai rasa nyut-nyutan hebat, periksakan ke klinik agar dokter dapat mengeluarkan tekanan darah di bawah kuku secara steril. 3) Tanda Bahaya: Langsung menuju IGD jika ujung jari terputus/robek dalam, tulang jari terlihat miring, atau jari kaku tidak bisa digerakkan sama sekali."
+      ]
+    },
+    {
+      "tag": "kelilipan",
+      "category": "Luka & Cedera",
+      "patterns": [
+        "mata kelilipan",
+        "mata kemasukan debu",
+        "mata perih kena pasir",
+        "ada kotoran di mata",
+        "cara mengatasi kelilipan",
+        "mata kemasukan bulu mata",
+        "mata kelilipan serangga"
+      ],
+      "responses": [
+        "1) Kotoran Halus & Ringan (Debu, Bulu Mata, Pasir Halus): Cuci tangan hingga bersih, JANGAN mengucek atau menggosok mata karena dapat menggores kornea, cobalah berkedip cepat beberapa kali agar air mata mendorong kotoran keluar, atau bilas mata perlahan menggunakan air bersih mengalir / tetes mata steril (artificial tears). 2) Kotoran di Balik Kelopak Mata: Tarik lembut kelopak mata atas ke arah bawah menutupi bulu mata bawah, atau rambang mata di dalam wadah berisi air matang bersih sambil berkedip. 3) Waspada Benda Tajam/Serius (Serpihan Besi, Kaca, Kayu, atau Pandangan Buram): Dilarang keras mengambil benda dengan pinset, tusuk gigi, atau cotton bud pada bola mata; tutup mata secara longgar dengan kasa/pelindung tanpa menekan bola mata, dan segera ke dokter/IGD (terutama jika mata tetap merah, perih, berair, atau silau setelah dibilas).",
+        "1) Level Ringan (Debu atau Serangga Kecil di Permukaan): Hindari mengucek mata dan lepaskan lensa kontak jika sedang memakainya; miringkan kepala lalu alirkan air bersih suam-suam kuku atau larutan saline steril dari sudut mata bagian dalam (dekat hidung) ke arah sudut luar. 2) Level Sedang (Kotoran Terlihat di Bagian Putih Mata): Jika kotoran tampak di kelopak atau bagian putih mata (sklera) dan tidak keluar saat dibilas, sentuh sangat lembut dengan ujung tisu bersih yang dibasahi air steril—jangan pernah menyentuh bagian hitam mata (kornea). 3) Level Berat (Benda Menancap/Trauma Mata): Jika mata kemasukan gram logam, serpihan tajam, atau rasa mengganjal dan nyeri tidak hilang setelah dibilas 15 menit, lindungi mata dengan penutup longgar dan langsung periksakan ke fasilitas kesehatan.",
+        "1) Penanganan Pertama Kelilipan: Tahan keinginan mengucek mata, kedipkan mata berulang kali di dalam air bersih atau kucurkan air bersih mengalir secara perlahan pada mata yang terbuka hingga debu/bulu mata luruh keluar. 2) Hal yang Dilarang: Jangan meniup mata dengan mulut (kuman dari ludah dapat menginfeksi mata), jangan memakai obat tetes mata sembarangan (terutama yang mengandung steroid), dan jangan menggunakan pinset/benda keras. 3) Tanda Bahaya Medis: Segera kunjungi dokter atau IGD apabila benda asing menancap di bagian tengah mata (kornea), penglihatan menjadi kabur, keluar darah/nanah dari mata, atau rasa sakit bertambah parah saat menggerakkan bola mata."
+      ]
+    },
+    {
+      "tag": "tersedak",
+      "category": "Kemasukan & Tertelan",
+      "patterns": [
+        "tersedak makanan",
+        "makanan nyangkut di tenggorokan",
+        "tersedak bakso",
+        "susah napas karena tersedak",
+        "pertolongan orang tersedak",
+        "anak tersedak permen",
+        "keselek tulang ikan"
+      ],
+      "responses": [
+        "1) Sumbatan Ringan (Korban Masih Bisa Batuk Keras, Bicara, atau Bernapas): Jangan menepuk punggung atau memberi minum saat batuk; tenangkan korban dan dorong untuk terus batuk sekuat mungkin secara mandiri hingga makanan keluar (khusus duri ikan kecil yang menyangkut di tenggorokan tanpa sesak napas: minum air hangat, jangan telan kepalan nasi kering yang besar karena bisa mendorong duri menancap makin dalam, dan ke klinik THT jika tidak hilang). 2) Sumbatan Total Dewasa & Anak >1 Tahun (Tidak Bisa Batuk, Bicara, atau Bernapas / Memegang Leher): Minta orang sekitar hubungi 119, berdirilah di belakang korban, condongkan tubuhnya ke depan, berikan 5 tepukan kuat di punggung (di antara dua tulang belikat) dengan tumit telapak tangan, lalu lanjutkan dengan 5 hentakan perut (Heimlich maneuver: kepalkan tangan di atas pusar di bawah tulang dada, tarik ke dalam dan ke atas secara mengentak); ulangi siklus 5 tepukan + 5 hentakan hingga benda keluar. 3) Khusus Bayi (<1 Tahun) atau Ibu Hamil: Untuk bayi, tengkurapkan di lengan bawah Anda (kepala lebih rendah dari dada) dan beri 5 tepukan punggung, lalu balikkan telentang dan beri 5 tekanan dada memakai 2 jari di tengah dada (DILARANG melakukan hentakan perut pada bayi); untuk ibu hamil/obesitas, ganti hentakan perut dengan hentakan di tengah dada.",
+        "1) Kondisi Ringan (Masih Ada Suara & Batuk Efektif): Biarkan korban membungkuk sedikit ke depan dan semangati untuk batuk keras berulang kali tanpa ditepuk punggungnya, serta jangan memasukkan jari ke mulut korban secara membabi buta karena bisa mendorong benda makin dalam. 2) Kondisi Darurat Dewasa/Anak (Napas Terhenti, Wajah Membiru, Tidak Bersuara): Segera lakukan protokol 5-and-5—bungkukkan korban, berikan 5 tepukan punggung yang tegas di antara tulang belikat, diikuti 5 hentakan perut (Heimlich) dengan memeluk dari belakang dan mengentakkan kepalan tangan ke arah dalam-atas tepat di atas pusar sambil memanggil bantuan medis 119. 3) Kondisi Khusus Bayi (<1 Tahun) & Tidak Sadar: Pada bayi, lakukan 5 tepukan punggung dalam posisi tengkurap disangga lengan diikuti 5 kompresi dada 2 jari; jika di tengah pertolongan korban (bayi/anak/dewasa) jatuh lemas tidak sadarkan diri, baringkan di alas datar, segera mulai RJP (kompresi dada) dan larikan ke IGD.",
+        "1) Tingkat Ringan (Tersedak Sebagian / Masih Bisa Bernapas): Pantau dengan ketat, minta korban batuk sekuat tenaga untuk melontarkan sumbatan, dan hindari memberi minum atau makanan padat selama jalan napas belum bersih. 2) Tingkat Berat Dewasa & Anak >1 Tahun (Sumbatan Jalan Napas Total): Bila korban memegang leher, tidak mampu mengeluarkan suara, dan tidak bisa batuk, segera berikan kombinasi 5 tepukan punggung (back blows) dan 5 hentakan perut (abdominal thrusts / Heimlich) secara bergantian sampai benda asing terlempar keluar. 3) Tingkat Berat Bayi (<1 Tahun) & Pasca-Tindakan: Untuk bayi di bawah 1 tahun, gunakan kombinasi 5 tepukan punggung (posisi kepala lebih rendah) dan 5 tekanan dada 2 jari tanpa menekan perut; setelah benda berhasil keluar melalui manuver Heimlich, korban tetap disarankan diperiksa ke dokter untuk memastikan tidak ada cedera organ dalam."
+      ]
+    },
+    {
+      "tag": "benda_masuk_telinga_hidung",
+      "category": "Kemasukan & Tertelan",
+      "patterns": [
+        "serangga masuk telinga",
+        "kacang masuk hidung anak",
+        "telinga kemasukan semut",
+        "mainan masuk hidung",
+        "benda asing di telinga",
+        "kuping kemasukan serangga",
+        "hidung kemasukan manik manik"
+      ],
+      "responses": [
+        "1) Serangga Hidup Masuk Telinga: Tenangkan korban dan JANGAN mengorek telinga dengan cotton bud, pinset, atau jari karena serangga akan merangkak makin dalam dan melukai gendang telinga; miringkan kepala, tarik sedikit daun telinga ke belakang-atas untuk meluruskan liang telinga, lalu teteskan air hangat kuku atau baby oil / minyak zaitun bersih hingga serangga mati dan mengapung keluar (CATATAN: Jangan teteskan cairan apa pun jika ada riwayat gendang telinga bolong, keluar nanah/darah, atau nyeri hebat). 2) Benda Padat di Telinga (Manik-manik, Kapas, Biji-bijian): Miringkan kepala ke sisi telinga yang kemasukan dan goyangkan perlahan agar jatuh karena gravitasi; dilarang meneteskan air/minyak pada biji-bijian karena biji akan mengembang dan menyumbat total. 3) Benda Masuk Hidung Anak (Kacang, Mainan, Kertas): Jangan dicongkel dengan pinset/cotton bud; minta anak bernapas lewat mulut, tekan/tutup lubang hidung yang tidak tersumbat dengan jari, lalu minta anak mengembuskan napas kuat-kuat dari hidung ('buang ingus' satu kali)—jika gagal atau benda yang masuk adalah baterai kancing/magnet, segera bawa ke IGD/dokter THT.",
+        "1) Kasus Telinga Kemasukan Serangga: Hindari memasukkan alat pengorek apa pun; di ruangan redup, coba sorotkan cahaya senter ke liang telinga (beberapa serangga tertarik keluar menuju cahaya), atau jika tidak keluar, teteskan minyak sayur bersih/baby oil suhu ruang agar serangga lemas (pastikan gendang telinga utuh tanpa perdarahan), lalu miringkan kepala agar mengalir keluar. 2) Kasus Telinga Kemasukan Benda Mati (Plastik/Kacang/Kapas): Jangan dikorek dan jangan diberi cairan; jika ujung kapas masih terlihat jelas di luar liang telinga, ambil hati-hati, namun jika berada di dalam saluran telinga, langsung bawa ke puskesmas/dokter THT agar diekstraksi dengan alat khusus. 3) Kasus Hidung Kemasukan Benda Asing: Tenangkan anak agar tidak menangis/menghirup napas dalam, tutup satu sisi lubang hidung yang sehat, dan minta hembuskan napas kencang lewat lubang hidung yang tersumbat; segera ke IGD jika benda tidak keluar, hidung berdarah, atau kemasukan baterai kancing (baterai dapat membakar jaringan hidung dalam hitungan jam).",
+        "1) Aturan Utama Telinga & Hidung: Dilarang keras mencungkil benda bulat/licin menggunakan cotton bud, peniti, atau pinset rumahan karena hampir selalu mendorong benda terjepit makin dalam. 2) Penanganan Spesifik Telinga: Untuk serangga hidup (semut/nyamuk/kepik) pada telinga yang sehat tanpa luka, teteskan sedikit baby oil/minyak bersih untuk mematikan gerak serangga sebelum dibawa ke klinik; untuk benda padat atau biji-bijian, cukup miringkan kepala tanpa meneteskan cairan apa pun. 3) Penanganan Spesifik Hidung & Tanda Bahaya: Gunakan teknik hembusan napas satu lubang hidung (atau teknik 'mother's kiss' pada balita dengan menutup lubang hidung sehat dan meniup lembut ke mulut anak); apabila gagal dalam 1-2 kali percobaan, benda berupa baterai kecil/magnet, atau muncul nyeri hebat dan perdarahan, segera menuju klinik/IGD terdekat."
+      ]
+    },
+    {
+      "tag": "kena_bahan_kimia_rumah",
+      "category": "Kemasukan & Tertelan",
+      "patterns": [
+        "tangan kena pembersih lantai",
+        "tidak sengaja tertelan sabun",
+        "kulit kena cairan pemutih",
+        "mata terciprat deterjen",
+        "kena bensin atau tiner",
+        "keracunan cairan pembersih",
+        "tertelan karbol"
+      ],
+      "responses": [
+        "1) Terkena Kulit (Deterjen Keras, Pemutih Pakaian, Pembersih Lantai/Porselen, Bensin/Tiner): Segera lepaskan pakaian, sarung tangan, atau perhiasan yang terkontaminasi, lalu guyur area kulit di bawah kucuran air bersih mengalir selama 15-20 menit terus-menerus (jangan dioles krim, minyak, odol, atau cairan penetral lain karena bisa memicu reaksi panas kimia); jika kulit tampak melepuh, pucat, atau perih hebat, tutup longgar dengan kasa steril dan ke dokter. 2) Terciprat ke Mata (Kondisi Darurat Mata): Segera bilas mata di bawah air keran mengalir yang lembut atau air bersih selama 15-20 menit penuh sambil menahan kelopak mata tetap terbuka dan menggerakkan bola mata ke segala arah (pastikan air mengalir dari sudut dalam dekat hidung ke arah luar agar tidak mengenai mata yang sehat), lalu langsung ke IGD. 3) Tidak Sengaja Tertelan (Sabun, Karbol, Pemutih, Racun Serangga, Bensin): JANGAN paksa korban muntah (cairan korosif/minyak yang dimuntahkan akan membakar kerongkongan dua kali atau masuk ke paru-paru), bersihkan sisa cairan di mulut, jangan beri susu/arang/air tanpa instruksi dokter, dan segera bawa korban beserta botol/kemasan produknya ke IGD atau hubungi 119.",
+        "1) Level Kulit (Kontak Cairan Pembersih/Kimia Rumah Tangga): Bersihkan sisa bubuk kimia jika ada dengan kain kering, lalu alirkan air bersih mengalir secara deras pada kulit selama 15-20 menit (hindari menyabuni kembali jika terkena bahan asam/basa kuat seperti pembersih kerak toilet), dan periksakan ke klinik bila muncul kemerahan luas atau luka bakar kimia. 2) Level Mata (Terciprat Sabun/Pemutih/Parfum/Cairan Kimia): Lepaskan lensa kontak jika pakai, miringkan kepala dan guyur mata yang terkena dengan air bersih mengalir tanpa henti selama 15-20 menit (jangan dikucek dan jangan pakai tetes mata biasa), kemudian segera menuju IGD. 3) Level Tertelan / Terhirup Uap Pekat: Jika terhirup uap pemutih/karbol di kamar mandi tertutup, segera bawa korban ke udara segar dan longgarkan pakaian; jika cairan tertelan, dilarang keras memancing muntah dengan jari atau air garam—segera larikan ke IGD terdekat sambil membawa label kemasan bahan kimia tersebut.",
+        "1) Penanganan Paparan Kulit: Lepaskan kain yang basah oleh bahan kimia dengan hati-hati, bilas bagian tubuh di bawah air mengalir sejuk selama 15-20 menit penuh hingga rasa licin atau panas hilang, dan jangan mengoleskan salep/bahan dapur apa pun sebelum diperiksa medis. 2) Penanganan Paparan Mata: Irigasi (cuci) mata secepat mungkin menggunakan air bersih mengalir selama minimal 15-20 menit dengan kelopak mata dibuka lebar menggunakan jari, lalu tutup longgar dan bawa ke dokter/IGD. 3) Penanganan Paparan Tertelan (Darurat Keracunan): Kumur mulut dengan air bersih dan ludahkan jika korban sadar, JANGAN memaksa muntah, jangan memberi minum susu/minyak secara sembarangan, pantau pernapasan korban, dan segera ke IGD rumah sakit sambil membawa foto atau botol kemasan produk agar dokter mengetahui komposisi zat kimianya."
+      ]
+    }
+  ],
+  "rules_and_metadata": {
+    "priority_rule": "Keyword berat (tidak sadar, tidak bernapas, darah banyak, kejang, nyeri dada, tenggelam, pingsan, pendarahan hebat) diprioritaskan langsung ke intent darurat_umum.",
+    "similarity_formula": "0.4 * Jaccard + 0.3 * Fuzzy + 0.3 * Coverage",
+    "threshold": 0.45,
+    "disclaimer": "SiagaBot hanya panduan pertolongan pertama cedera sehari-hari, bukan pengganti tenaga medis, dan tidak memberikan dosis obat.",
+    "normalisasi": {
+      "gk": "tidak",
+      "ga": "tidak",
+      "gak": "tidak",
+      "gmn": "bagaimana",
+      "gimana": "bagaimana",
+      "kejedot": "terbentur",
+      "kebentur": "terbentur",
+      "kejepit": "terjepit",
+      "kesiram": "tersiram",
+      "keiris": "teriris",
+      "kesayat": "teriris",
+      "ketusuk": "tertusuk",
+      "keselek": "tersedak",
+      "kecengklak": "keseleo",
+      "step": "kejang",
+      "keinjak": "tertusuk"
+    }
+  }
+}
