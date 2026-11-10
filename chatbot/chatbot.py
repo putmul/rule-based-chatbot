@@ -53,6 +53,37 @@ STOPWORDS = {
     "sih",
 }
 
+# Body-location and context words are useful as context, but should not
+# dominate intent matching because they appear in many different intents.
+# The actual list can be extended from rules_and_metadata in the JSON file.
+DEFAULT_LOW_INFORMATION_WORDS = {
+    "kena",
+    "terkena",
+    "kaki",
+    "tangan",
+    "jari",
+    "hidung",
+    "mata",
+    "kulit",
+    "kepala",
+    "lutut",
+    "siku",
+    "dahi",
+    "badan",
+    "telapak",
+    "pergelangan",
+    "engkel",
+    "jempol",
+    "wajah",
+    "leher",
+    "telinga",
+    "kuping",
+    "area",
+    "bagian",
+    "sisi",
+    "tubuh",
+}
+
 
 def load_knowledge_map(file_path: str | Path) -> dict[str, Any]:
     """Load and return the JSON knowledge map."""
@@ -80,10 +111,22 @@ def normalize_text(
     return " ".join(words)
 
 
-def tokenize_text(text: str) -> list[str]:
+def tokenize_text(
+    text: str,
+    low_information_words: set[str] | None = None,
+) -> list[str]:
     """Split normalized text and remove non-essential stopwords."""
 
-    return [word for word in text.split() if word not in STOPWORDS]
+    low_information_words = (
+        DEFAULT_LOW_INFORMATION_WORDS
+        if low_information_words is None
+        else low_information_words
+    )
+    return [
+        word
+        for word in text.split()
+        if word not in STOPWORDS and word not in low_information_words
+    ]
 
 
 def jaccard_score(input_tokens: list[str], pattern_tokens: list[str]) -> float:
@@ -117,16 +160,19 @@ def similarity_components(
     input_text: str,
     pattern_text: str,
     normalization_map: dict[str, str] | None = None,
+    low_information_words: set[str] | None = None,
 ) -> dict[str, float]:
     """Return each component and the configured combined score."""
 
     normalized_input = normalize_text(input_text, normalization_map)
     normalized_pattern = normalize_text(pattern_text, normalization_map)
-    input_tokens = tokenize_text(normalized_input)
-    pattern_tokens = tokenize_text(normalized_pattern)
+    input_tokens = tokenize_text(normalized_input, low_information_words)
+    pattern_tokens = tokenize_text(normalized_pattern, low_information_words)
 
     jaccard = jaccard_score(input_tokens, pattern_tokens)
-    fuzzy = fuzzy_score(normalized_input, normalized_pattern)
+    # Fuzzy matching also uses content tokens so low-information words do not
+    # inflate the score through character-level similarity.
+    fuzzy = fuzzy_score(" ".join(input_tokens), " ".join(pattern_tokens))
     coverage = coverage_score(input_tokens, pattern_tokens)
     score = (0.4 * jaccard) + (0.3 * fuzzy) + (0.3 * coverage)
 
@@ -142,10 +188,16 @@ def similarity(
     input_text: str,
     pattern_text: str,
     normalization_map: dict[str, str] | None = None,
+    low_information_words: set[str] | None = None,
 ) -> float:
     """Calculate and return only the combined similarity score."""
 
-    return similarity_components(input_text, pattern_text, normalization_map)["score"]
+    return similarity_components(
+        input_text,
+        pattern_text,
+        normalization_map,
+        low_information_words,
+    )["score"]
 
 
 def _normalization_map(knowledge_map: dict[str, Any]) -> dict[str, str]:
@@ -162,17 +214,26 @@ def _threshold(knowledge_map: dict[str, Any]) -> float:
     return float(metadata.get("threshold", DEFAULT_THRESHOLD))
 
 
+def _low_information_words(knowledge_map: dict[str, Any]) -> set[str]:
+    """Read and combine generic-word configuration from the knowledge map."""
+
+    metadata = knowledge_map.get("rules_and_metadata", {})
+    configured_words = metadata.get("low_information_words", [])
+    return DEFAULT_LOW_INFORMATION_WORDS | set(configured_words)
+
+
 def _is_priority_match(
     user_message: str,
     pattern: str,
     normalization_map: dict[str, str],
+    low_information_words: set[str],
 ) -> bool:
     """Return whether a priority pattern occurs in the normalized input."""
 
     normalized_input = normalize_text(user_message, normalization_map)
     normalized_pattern = normalize_text(pattern, normalization_map)
-    input_tokens = set(tokenize_text(normalized_input))
-    pattern_tokens = set(tokenize_text(normalized_pattern))
+    input_tokens = set(tokenize_text(normalized_input, low_information_words))
+    pattern_tokens = set(tokenize_text(normalized_pattern, low_information_words))
     return bool(pattern_tokens) and pattern_tokens.issubset(input_tokens)
 
 
@@ -183,6 +244,7 @@ def rank_intents(
     """Rank intents and retain component scores for debugging and display."""
 
     normalization_map = _normalization_map(knowledge_map)
+    low_information_words = _low_information_words(knowledge_map)
     threshold = _threshold(knowledge_map)
     rankings: list[dict[str, Any]] = []
 
@@ -194,15 +256,24 @@ def rank_intents(
                 user_message,
                 pattern,
                 normalization_map,
+                low_information_words,
             )
             priority = (
                 intent.get("tag") == "darurat_umum"
-                and _is_priority_match(user_message, pattern, normalization_map)
+                and _is_priority_match(
+                    user_message,
+                    pattern,
+                    normalization_map,
+                    low_information_words,
+                )
             )
             candidate = {
                 "intent": intent,
                 "tag": intent.get("tag"),
                 "matched_pattern": pattern,
+                "pattern_length": len(
+                    normalize_text(pattern, normalization_map).split()
+                ),
                 "jaccard": components["jaccard"],
                 "fuzzy": components["fuzzy"],
                 "coverage": components["coverage"],
@@ -211,7 +282,13 @@ def rank_intents(
                 "matched": priority or components["score"] >= threshold,
             }
 
-            if best_match is None or candidate["score"] > best_match["score"]:
+            if best_match is None or (
+                candidate["score"],
+                candidate["pattern_length"],
+            ) > (
+                best_match["score"],
+                best_match["pattern_length"],
+            ):
                 best_match = candidate
 
             # A priority keyword must win even when the full input contains
@@ -224,7 +301,11 @@ def rank_intents(
             rankings.append(best_match)
 
     rankings.sort(
-        key=lambda item: (item["priority"], item["score"]),
+        key=lambda item: (
+            item["priority"],
+            item["score"],
+            item["pattern_length"],
+        ),
         reverse=True,
     )
     return rankings

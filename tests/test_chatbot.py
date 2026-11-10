@@ -24,12 +24,12 @@ class ChatbotCoreTests(unittest.TestCase):
         )
         self.assertEqual(result, "aku tidak sengaja tertusuk paku")
 
-    def test_identical_pattern_has_high_similarity(self):
-        score = similarity("kaki keseleo", "kaki terkilir")
+    def test_same_symptom_has_high_similarity(self):
+        score = similarity("kaki keseleo", "tangan keseleo")
         self.assertGreaterEqual(score, 0.45)
 
     def test_similarity_components_are_returned(self):
-        components = similarity_components("kaki keseleo", "kaki terkilir")
+        components = similarity_components("kaki keseleo", "tangan keseleo")
         self.assertEqual(
             set(components),
             {"jaccard", "fuzzy", "coverage", "score"},
@@ -40,6 +40,18 @@ class ChatbotCoreTests(unittest.TestCase):
             + (0.3 * components["fuzzy"])
             + (0.3 * components["coverage"]),
         )
+
+    def test_low_information_words_do_not_score_by_themselves(self):
+        self.assertEqual(similarity("kena", "kena"), 0.0)
+        self.assertEqual(similarity("kaki", "tangan"), 0.0)
+
+    def test_low_information_words_do_not_hide_the_real_intent(self):
+        result = find_best_intent("kaki keseleo", KNOWLEDGE_MAP)
+        self.assertEqual(result["intent"]["tag"], "keseleo")
+
+    def test_specific_pattern_wins_over_generic_keyword(self):
+        result = find_best_intent("hidung berdarah", KNOWLEDGE_MAP)
+        self.assertEqual(result["intent"]["tag"], "mimisan")
 
     def test_returns_top_five_rankings(self):
         rankings = rank_intents("kaki keseleo", KNOWLEDGE_MAP)
