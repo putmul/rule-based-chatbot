@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ bot_name }} - Statistik</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <nav class="navbar"><a class="brand" href="/">🩹 {{ bot_name }}</a><a href="/statistics">Statistik</a></nav>
+  <main class="dashboard">
+    <div class="page-heading"><div><p class="eyebrow">MONITORING CHATBOT</p><h1>Statistik pertanyaan</h1></div><div class="heading-actions"><a class="secondary" href="/">Kembali ke Chat</a><button id="refresh" class="secondary">Refresh</button></div></div>
+    <p id="error" class="error"></p>
+    <section class="summary-grid">
+      <div class="stat-card"><span>Total pertanyaan</span><strong id="total">-</strong></div>
+      <div class="stat-card"><span>Intent dikenali</span><strong id="recognized">-</strong></div>
+      <div class="stat-card"><span>Tidak dikenali</span><strong id="unknown">-</strong></div>
+      <div class="stat-card"><span>Intent terpopuler</span><strong id="popular">-</strong></div>
+    </section>
+    <section class="dashboard-grid">
+      <div class="panel"><h2>Jumlah pertanyaan per intent</h2><div id="intent-list" class="intent-list"></div></div>
+      <div class="panel"><h2>Pertanyaan tidak dikenali</h2><div class="table-wrap"><table><thead><tr><th>Pertanyaan</th><th>Score</th><th>Waktu</th></tr></thead><tbody id="unknown-list"></tbody></table></div></div>
+    </section>
+  </main>
+  <script src="{{ url_for('static', filename='js/statistics.js') }}"></script>
+</body>
+</html>

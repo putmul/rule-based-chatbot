@@ -33,6 +33,19 @@ python -m chatbot.cli
 
 Ketik `keluar`, `exit`, atau `quit` untuk mengakhiri sesi.
 
+## Menjalankan web
+
+Install dependency lalu jalankan server Flask:
+
+```bash
+python -m pip install -r requirements.txt
+python app.py
+```
+
+Buka `http://127.0.0.1:5000/` untuk panel chatbot. Halaman statistik tersedia
+di `http://127.0.0.1:5000/statistics` dan membutuhkan MariaDB agar histori chat
+dapat ditampilkan.
+
 Jika MariaDB belum aktif atau database belum dibuat, chatbot tetap dapat
 menjawab pertanyaan, tetapi histori chat tidak akan disimpan.
 

@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ knowledge_map.bot_name }} - Chat</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <nav class="navbar"><a class="brand" href="/">{{ knowledge_map.avatar }} {{ knowledge_map.bot_name }}</a><a href="/statistics">Statistik</a></nav>
+  <main class="chat-layout">
+    <section class="chat-card">
+      <header class="chat-header"><div class="avatar">{{ knowledge_map.avatar }}</div><div><h1>{{ knowledge_map.bot_name }}</h1><p>Asisten panduan pertolongan pertama</p></div></header>
+      <div id="messages" class="messages" aria-live="polite"><div class="message bot">{{ knowledge_map.greeting }}</div></div>
+      <div class="suggestions">{% for suggestion in knowledge_map.suggestions %}<button type="button" class="suggestion">{{ suggestion }}</button>{% endfor %}</div>
+      <form id="chat-form" class="chat-form"><input id="message-input" autocomplete="off" placeholder="Tulis pertanyaan Anda..." aria-label="Pertanyaan"><button type="submit">Kirim</button></form>
+      <p id="status" class="status"></p>
+    </section>
+  </main>
+  <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+</body>
+</html>
