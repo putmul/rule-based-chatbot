@@ -11,11 +11,19 @@ import json
 import random
 import re
 from difflib import SequenceMatcher
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
+try:
+    from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
+except ImportError:  # pragma: no cover - requirements install Sastrawi in production
+    StemmerFactory = None  # type: ignore[assignment]
+
 
 DEFAULT_THRESHOLD = 0.45
+
+_STEMMER = StemmerFactory().create_stemmer() if StemmerFactory else None
 
 # Keep negation and safety words. Removing these words could change the
 # meaning of a medical complaint, for example "tidak berdarah".
@@ -111,6 +119,59 @@ def normalize_text(
     return " ".join(words)
 
 
+@lru_cache(maxsize=4096)
+def stem_text(text: str) -> str:
+    """Stem normalized Indonesian text when Sastrawi is available."""
+
+    if _STEMMER is None:
+        return text
+    return _STEMMER.stem(text)
+
+
+def _content_tokens(
+    text: str,
+    normalization_map: dict[str, str] | None = None,
+    low_information_words: set[str] | None = None,
+) -> list[str]:
+    """Normalize, stem, and tokenize text for intent similarity."""
+
+    normalized = normalize_text(text, normalization_map)
+    stemmed = stem_text(normalized)
+    return tokenize_text(stemmed, low_information_words)
+
+
+def _match_tokens(
+    text: str,
+    normalization_map: dict[str, str] | None = None,
+    low_information_words: set[str] | None = None,
+) -> list[str]:
+    """Return content tokens plus context words when content exists.
+
+    Location words such as ``hidung`` and ``jari`` are weak evidence by
+    themselves, but become useful alongside a symptom such as ``berdarah``
+    or ``terjepit``. Keeping them here prevents generic patterns from making
+    unrelated intents look identical.
+    """
+
+    low_information_words = (
+        DEFAULT_LOW_INFORMATION_WORDS
+        if low_information_words is None
+        else low_information_words
+    )
+    normalized = normalize_text(text, normalization_map)
+    stemmed_words = stem_text(normalized).split()
+    content_tokens = tokenize_text(" ".join(stemmed_words), low_information_words)
+    if not content_tokens:
+        return []
+
+    context_tokens = [
+        word
+        for word in stemmed_words
+        if word in low_information_words and word not in STOPWORDS
+    ]
+    return content_tokens + context_tokens
+
+
 def tokenize_text(
     text: str,
     low_information_words: set[str] | None = None,
@@ -164,10 +225,16 @@ def similarity_components(
 ) -> dict[str, float]:
     """Return each component and the configured combined score."""
 
-    normalized_input = normalize_text(input_text, normalization_map)
-    normalized_pattern = normalize_text(pattern_text, normalization_map)
-    input_tokens = tokenize_text(normalized_input, low_information_words)
-    pattern_tokens = tokenize_text(normalized_pattern, low_information_words)
+    input_tokens = _match_tokens(
+        input_text,
+        normalization_map,
+        low_information_words,
+    )
+    pattern_tokens = _match_tokens(
+        pattern_text,
+        normalization_map,
+        low_information_words,
+    )
 
     jaccard = jaccard_score(input_tokens, pattern_tokens)
     # Fuzzy matching also uses content tokens so low-information words do not
@@ -222,6 +289,41 @@ def _low_information_words(knowledge_map: dict[str, Any]) -> set[str]:
     return DEFAULT_LOW_INFORMATION_WORDS | set(configured_words)
 
 
+def _intent_keyword_evidence(
+    user_message: str,
+    intent_tag: str | None,
+    knowledge_map: dict[str, Any],
+) -> float:
+    """Return weighted evidence for an intent-specific keyword or phrase."""
+
+    if not intent_tag:
+        return 0.0
+
+    metadata = knowledge_map.get("rules_and_metadata", {})
+    keyword_groups = metadata.get("intent_keywords", {})
+    configured_keywords = keyword_groups.get(intent_tag, {})
+    if not configured_keywords:
+        return 0.0
+
+    normalization_map = _normalization_map(knowledge_map)
+    low_information_words = _low_information_words(knowledge_map)
+    input_tokens = set(
+        _match_tokens(user_message, normalization_map, low_information_words)
+    )
+    matched_weight = 0.0
+
+    for keyword, weight in configured_keywords.items():
+        keyword_tokens = set(
+            _match_tokens(keyword, normalization_map, low_information_words)
+        )
+        if keyword_tokens and keyword_tokens.issubset(input_tokens):
+            matched_weight += float(weight)
+
+    # A weight of four represents a strong, intent-specific phrase.  The cap
+    # prevents long messages with repeated evidence from dominating ranking.
+    return min(1.0, matched_weight / 4.0)
+
+
 def _is_priority_match(
     user_message: str,
     pattern: str,
@@ -250,6 +352,11 @@ def rank_intents(
 
     for intent in knowledge_map.get("intents", []):
         best_match: dict[str, Any] | None = None
+        keyword_score = _intent_keyword_evidence(
+            user_message,
+            intent.get("tag"),
+            knowledge_map,
+        )
 
         for pattern in intent.get("patterns", []):
             components = similarity_components(
@@ -258,6 +365,10 @@ def rank_intents(
                 normalization_map,
                 low_information_words,
             )
+            base_score = components["score"]
+            # Keep the original similarity formula while adding a bounded,
+            # intent-specific signal for paraphrases and informal wording.
+            score = min(1.0, (0.60 * base_score) + (0.40 * keyword_score))
             priority = (
                 intent.get("tag") == "darurat_umum"
                 and _is_priority_match(
@@ -277,9 +388,11 @@ def rank_intents(
                 "jaccard": components["jaccard"],
                 "fuzzy": components["fuzzy"],
                 "coverage": components["coverage"],
-                "score": components["score"],
+                "score": score,
+                "base_score": base_score,
+                "keyword_score": keyword_score,
                 "priority": priority,
-                "matched": priority or components["score"] >= threshold,
+                "matched": priority or score >= threshold,
             }
 
             if best_match is None or (

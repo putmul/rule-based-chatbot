@@ -7,6 +7,7 @@ from chatbot.chatbot import (
     normalize_text,
     process_message,
     rank_intents,
+    stem_text,
     similarity,
     similarity_components,
 )
@@ -23,6 +24,10 @@ class ChatbotCoreTests(unittest.TestCase):
             KNOWLEDGE_MAP["rules_and_metadata"]["normalisasi"],
         )
         self.assertEqual(result, "aku tidak sengaja tertusuk paku")
+
+    def test_sastrawi_stems_indonesian_words(self):
+        result = stem_text("kulitnya terkelupas dan tangan menggores benda")
+        self.assertEqual(result, "kulit kelupas dan tangan gores benda")
 
     def test_same_symptom_has_high_similarity(self):
         score = similarity("kaki keseleo", "tangan keseleo")
