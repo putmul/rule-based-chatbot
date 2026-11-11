@@ -46,14 +46,15 @@ Buka `http://127.0.0.1:5000/` untuk panel chatbot. Halaman statistik tersedia
 di `http://127.0.0.1:5000/statistics` dan membutuhkan MariaDB agar histori chat
 dapat ditampilkan.
 
+### Tampilan sistem
+
+#### Halaman Chatbot
+
+![Halaman Chatbot](screenshots/Screenshot%20%28666%29.png)
+
+#### Halaman Statistik
+
+![Halaman Statistik](screenshots/Screenshot%20%28665%29.png)
+
 Jika MariaDB belum aktif atau database belum dibuat, chatbot tetap dapat
 menjawab pertanyaan, tetapi histori chat tidak akan disimpan.
-
-## Menjalankan test
-
-```bash
-python -m unittest discover -s tests -v
-```
-
-Core chatbot berada di `chatbot/chatbot.py` dalam bentuk fungsi dan dapat
-digunakan kembali oleh interface web pada tahap berikutnya.

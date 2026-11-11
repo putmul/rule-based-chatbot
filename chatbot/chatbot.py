@@ -1,8 +1,9 @@
-"""Core function-based engine for SiagaBot.
+"""Mesin utama SiagaBot untuk mengenali intent dan memilih respons.
 
-This module intentionally does not read from the terminal or write to the
-database.  It can therefore be reused by the CLI now and by a web adapter
-later.
+Modul ini hanya mengolah teks. Modul ini tidak membaca terminal dan tidak
+menulis database, sehingga dapat digunakan kembali oleh CLI maupun web.
+Alur sederhananya adalah: normalisasi teks -> hitung kemiripan -> pilih
+intent terbaik -> pilih respons.
 """
 
 from __future__ import annotations
@@ -22,11 +23,16 @@ except ImportError:  # pragma: no cover - requirements install Sastrawi in produ
 
 
 DEFAULT_THRESHOLD = 0.45
+JACCARD_WEIGHT = 0.4
+FUZZY_WEIGHT = 0.3
+COVERAGE_WEIGHT = 0.3
+BASE_SCORE_WEIGHT = 0.6
+KEYWORD_SCORE_WEIGHT = 0.4
 
 _STEMMER = StemmerFactory().create_stemmer() if StemmerFactory else None
 
-# Keep negation and safety words. Removing these words could change the
-# meaning of a medical complaint, for example "tidak berdarah".
+# Kata negasi dan keselamatan tetap dipertahankan. Menghapusnya dapat
+# mengubah arti keluhan medis, misalnya pada kalimat "tidak berdarah".
 STOPWORDS = {
     "aku",
     "saya",
@@ -61,9 +67,9 @@ STOPWORDS = {
     "sih",
 }
 
-# Body-location and context words are useful as context, but should not
-# dominate intent matching because they appear in many different intents.
-# The actual list can be extended from rules_and_metadata in the JSON file.
+# Kata lokasi tubuh dan konteks berguna sebagai informasi tambahan, tetapi
+# tidak boleh mendominasi pencocokan karena dapat muncul di banyak intent.
+# Daftar ini dapat diperluas melalui rules_and_metadata pada file JSON.
 DEFAULT_LOW_INFORMATION_WORDS = {
     "kena",
     "terkena",
@@ -94,7 +100,7 @@ DEFAULT_LOW_INFORMATION_WORDS = {
 
 
 def load_knowledge_map(file_path: str | Path) -> dict[str, Any]:
-    """Load and return the JSON knowledge map."""
+    """Membaca file JSON dan mengembalikan basis pengetahuan chatbot."""
 
     path = Path(file_path)
     with path.open("r", encoding="utf-8") as file:
@@ -105,10 +111,11 @@ def normalize_text(
     text: str,
     normalization_map: dict[str, str] | None = None,
 ) -> str:
-    """Normalize text into lowercase words without punctuation.
+    """Menyeragamkan teks sebelum dibandingkan dengan pola intent.
 
-    Slang replacement is performed per token so that the same normalization
-    can be applied to user input and knowledge-map patterns.
+    Teks diubah menjadi huruf kecil, tanda baca dihapus, lalu kata tidak baku
+    diganti berdasarkan ``normalization_map``. Proses per kata membuat input
+    user dan pola pada knowledge map diproses dengan cara yang sama.
     """
 
     normalization_map = normalization_map or {}
@@ -121,7 +128,7 @@ def normalize_text(
 
 @lru_cache(maxsize=4096)
 def stem_text(text: str) -> str:
-    """Stem normalized Indonesian text when Sastrawi is available."""
+    """Mengubah kata ke bentuk dasar menggunakan Sastrawi jika tersedia."""
 
     if _STEMMER is None:
         return text
@@ -133,7 +140,7 @@ def _content_tokens(
     normalization_map: dict[str, str] | None = None,
     low_information_words: set[str] | None = None,
 ) -> list[str]:
-    """Normalize, stem, and tokenize text for intent similarity."""
+    """Menghasilkan token penting untuk perhitungan kemiripan intent."""
 
     normalized = normalize_text(text, normalization_map)
     stemmed = stem_text(normalized)
@@ -145,12 +152,11 @@ def _match_tokens(
     normalization_map: dict[str, str] | None = None,
     low_information_words: set[str] | None = None,
 ) -> list[str]:
-    """Return content tokens plus context words when content exists.
+    """Menghasilkan token gejala ditambah token konteks yang relevan.
 
-    Location words such as ``hidung`` and ``jari`` are weak evidence by
-    themselves, but become useful alongside a symptom such as ``berdarah``
-    or ``terjepit``. Keeping them here prevents generic patterns from making
-    unrelated intents look identical.
+    Kata lokasi seperti ``hidung`` dan ``jari`` tidak cukup kuat jika berdiri
+    sendiri, tetapi berguna jika muncul bersama gejala seperti ``berdarah``
+    atau ``terjepit``.
     """
 
     low_information_words = (
@@ -176,7 +182,7 @@ def tokenize_text(
     text: str,
     low_information_words: set[str] | None = None,
 ) -> list[str]:
-    """Split normalized text and remove non-essential stopwords."""
+    """Memecah teks dan membuang stopword serta kata yang terlalu umum."""
 
     low_information_words = (
         DEFAULT_LOW_INFORMATION_WORDS
@@ -191,7 +197,7 @@ def tokenize_text(
 
 
 def jaccard_score(input_tokens: list[str], pattern_tokens: list[str]) -> float:
-    """Calculate token-set Jaccard similarity."""
+    """Menghitung kemiripan berdasarkan irisan himpunan token."""
 
     input_set = set(input_tokens)
     pattern_set = set(pattern_tokens)
@@ -202,7 +208,7 @@ def jaccard_score(input_tokens: list[str], pattern_tokens: list[str]) -> float:
 
 
 def fuzzy_score(input_text: str, pattern_text: str) -> float:
-    """Calculate text similarity using Python's standard library."""
+    """Menghitung kemiripan susunan karakter dengan ``SequenceMatcher``."""
 
     if not input_text or not pattern_text:
         return 0.0
@@ -210,7 +216,7 @@ def fuzzy_score(input_text: str, pattern_text: str) -> float:
 
 
 def coverage_score(input_tokens: list[str], pattern_tokens: list[str]) -> float:
-    """Calculate how much of a pattern is covered by the input."""
+    """Menghitung persentase token pola yang ditemukan pada input user."""
 
     if not pattern_tokens:
         return 0.0
@@ -223,7 +229,12 @@ def similarity_components(
     normalization_map: dict[str, str] | None = None,
     low_information_words: set[str] | None = None,
 ) -> dict[str, float]:
-    """Return each component and the configured combined score."""
+    """Menggabungkan tiga skor kemiripan menjadi satu skor dasar.
+
+    Skor dasar menggunakan bobot Jaccard 40%, fuzzy 30%, dan coverage 30%.
+    Komponen individual tetap dikembalikan agar dapat ditampilkan untuk
+    debugging atau statistik.
+    """
 
     input_tokens = _match_tokens(
         input_text,
@@ -237,11 +248,15 @@ def similarity_components(
     )
 
     jaccard = jaccard_score(input_tokens, pattern_tokens)
-    # Fuzzy matching also uses content tokens so low-information words do not
-    # inflate the score through character-level similarity.
+    # Fuzzy juga menggunakan token penting agar kata umum tidak menaikkan
+    # skor secara tidak wajar hanya karena kemiripan karakter.
     fuzzy = fuzzy_score(" ".join(input_tokens), " ".join(pattern_tokens))
     coverage = coverage_score(input_tokens, pattern_tokens)
-    score = (0.4 * jaccard) + (0.3 * fuzzy) + (0.3 * coverage)
+    score = (
+        (JACCARD_WEIGHT * jaccard)
+        + (FUZZY_WEIGHT * fuzzy)
+        + (COVERAGE_WEIGHT * coverage)
+    )
 
     return {
         "jaccard": jaccard,
@@ -257,7 +272,7 @@ def similarity(
     normalization_map: dict[str, str] | None = None,
     low_information_words: set[str] | None = None,
 ) -> float:
-    """Calculate and return only the combined similarity score."""
+    """Mengembalikan hanya skor gabungan tanpa rincian komponennya."""
 
     return similarity_components(
         input_text,
@@ -268,21 +283,21 @@ def similarity(
 
 
 def _normalization_map(knowledge_map: dict[str, Any]) -> dict[str, str]:
-    """Read the slang map from the knowledge map metadata."""
+    """Mengambil kamus normalisasi kata dari metadata knowledge map."""
 
     metadata = knowledge_map.get("rules_and_metadata", {})
     return metadata.get("normalisasi", {})
 
 
 def _threshold(knowledge_map: dict[str, Any]) -> float:
-    """Read the configured threshold, with a safe default."""
+    """Mengambil ambang minimal kecocokan dengan nilai default yang aman."""
 
     metadata = knowledge_map.get("rules_and_metadata", {})
     return float(metadata.get("threshold", DEFAULT_THRESHOLD))
 
 
 def _low_information_words(knowledge_map: dict[str, Any]) -> set[str]:
-    """Read and combine generic-word configuration from the knowledge map."""
+    """Menggabungkan daftar kata umum bawaan dan konfigurasi knowledge map."""
 
     metadata = knowledge_map.get("rules_and_metadata", {})
     configured_words = metadata.get("low_information_words", [])
@@ -294,7 +309,11 @@ def _intent_keyword_evidence(
     intent_tag: str | None,
     knowledge_map: dict[str, Any],
 ) -> float:
-    """Return weighted evidence for an intent-specific keyword or phrase."""
+    """Menghitung bukti tambahan dari keyword khusus suatu intent.
+
+    Keyword yang cocok menambah skor, tetapi nilainya dibatasi maksimal 1.0
+    agar pesan panjang tidak otomatis mengalahkan semua intent lain.
+    """
 
     if not intent_tag:
         return 0.0
@@ -319,8 +338,8 @@ def _intent_keyword_evidence(
         if keyword_tokens and keyword_tokens.issubset(input_tokens):
             matched_weight += float(weight)
 
-    # A weight of four represents a strong, intent-specific phrase.  The cap
-    # prevents long messages with repeated evidence from dominating ranking.
+    # Bobot empat dianggap sebagai bukti kuat yang spesifik untuk intent.
+    # Pembatas mencegah pesan panjang mendominasi hasil ranking.
     return min(1.0, matched_weight / 4.0)
 
 
@@ -330,7 +349,7 @@ def _is_priority_match(
     normalization_map: dict[str, str],
     low_information_words: set[str],
 ) -> bool:
-    """Return whether a priority pattern occurs in the normalized input."""
+    """Memeriksa apakah pola prioritas muncul lengkap pada input user."""
 
     normalized_input = normalize_text(user_message, normalization_map)
     normalized_pattern = normalize_text(pattern, normalization_map)
@@ -343,7 +362,12 @@ def rank_intents(
     user_message: str,
     knowledge_map: dict[str, Any],
 ) -> list[dict[str, Any]]:
-    """Rank intents and retain component scores for debugging and display."""
+    """Mengurutkan semua intent dari kandidat terbaik hingga terendah.
+
+    Setiap pola dibandingkan dengan input. Pola terbaik untuk satu intent
+    disimpan, lalu seluruh kandidat diurutkan berdasarkan prioritas, skor,
+    dan panjang pola. Rincian skor sengaja dipertahankan untuk debugging.
+    """
 
     normalization_map = _normalization_map(knowledge_map)
     low_information_words = _low_information_words(knowledge_map)
@@ -366,9 +390,13 @@ def rank_intents(
                 low_information_words,
             )
             base_score = components["score"]
-            # Keep the original similarity formula while adding a bounded,
-            # intent-specific signal for paraphrases and informal wording.
-            score = min(1.0, (0.60 * base_score) + (0.40 * keyword_score))
+            # Skor dasar dipadukan dengan keyword khusus agar variasi bahasa
+            # informal tetap dapat dikenali tanpa mengabaikan kemiripan pola.
+            score = min(
+                1.0,
+                (BASE_SCORE_WEIGHT * base_score)
+                + (KEYWORD_SCORE_WEIGHT * keyword_score),
+            )
             priority = (
                 intent.get("tag") == "darurat_umum"
                 and _is_priority_match(
@@ -404,8 +432,8 @@ def rank_intents(
             ):
                 best_match = candidate
 
-            # A priority keyword must win even when the full input contains
-            # additional words that lower its normal similarity score.
+            # Keyword prioritas harus tetap menang walaupun input memiliki
+            # kata tambahan yang menurunkan skor kemiripan normalnya.
             if priority:
                 best_match = candidate
                 break
@@ -428,7 +456,7 @@ def find_best_intent(
     user_message: str,
     knowledge_map: dict[str, Any],
 ) -> dict[str, Any]:
-    """Find the highest-scoring intent and apply the configured threshold."""
+    """Memilih satu intent terbaik dan menerapkan ambang kecocokan."""
 
     rankings = rank_intents(user_message, knowledge_map)
     if not rankings:
@@ -448,7 +476,7 @@ def find_best_intent(
 
 
 def _format_response(response: str, knowledge_map: dict[str, Any]) -> str:
-    """Replace knowledge-map placeholders in a response."""
+    """Mengganti placeholder respons, misalnya ``{nama_bot}``."""
 
     bot_name = knowledge_map.get("bot_name", "SiagaBot")
     return response.replace("{nama_bot}", bot_name)
@@ -458,7 +486,7 @@ def choose_response(
     match_result: dict[str, Any],
     knowledge_map: dict[str, Any],
 ) -> str:
-    """Choose one response from the matched intent or fallback responses."""
+    """Memilih respons acak dari intent cocok atau daftar fallback."""
 
     intent = match_result.get("intent")
     if intent is not None and match_result.get("matched"):
@@ -476,7 +504,11 @@ def process_message(
     user_message: str,
     knowledge_map: dict[str, Any],
 ) -> dict[str, Any]:
-    """Process one user message without CLI or database side effects."""
+    """Memproses satu pesan dari awal sampai menjadi respons chatbot.
+
+    Fungsi ini hanya mengembalikan hasil pemrosesan. Penyimpanan database
+    dilakukan oleh pemanggil seperti CLI atau aplikasi web.
+    """
 
     match_result = find_best_intent(user_message, knowledge_map)
     response = choose_response(match_result, knowledge_map)
